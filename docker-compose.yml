@@ -1,0 +1,37 @@
+version: '3'
+services:
+
+  mapploter_php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mapplotter
+    image: refeed/mapplotter:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - mysql
+    networks:
+      - backend
+
+  mysql_dev:
+    image: mysql:8.0
+    container_name: mysql_dev
+    restart: unless-stopped
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysqldatadev:/var/lib/mysql
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  mysqldatadev:
+    driver: local
